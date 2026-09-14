@@ -96,21 +96,62 @@ and selecting the final output river.
 **Confirm:** Keep only the reading, exercises, and assignment notes I actually
 completed at home, and add links or filenames if any Week 2 notes were saved.
 
-## Week 3
+## Week 3 — Lox and Programs that Generate Programs
 
-**Date:** _To be provided._
+**Date:** _Add the actual class date._
 
 ### Preparation before class
 
-_To be written from the Week 3 material and my actual preparation._
+I reviewed the main features of the Lox language, including dynamic typing,
+variables, expressions, control flow, functions, recursion, classes, and
+garbage collection. The preparation distinguished compile time from run time:
+compile time is when source is translated, whereas run time is when the
+resulting program executes. I also noted that dynamic typing allows a variable
+to hold values of different types during execution, but type errors may only
+be detected at run time.
+
+The self-study material used short Lox exercises to practise `print`, variable
+declarations, loops, functions, and recursion. It also raised language-design
+questions, such as whether a simpler and more general feature is necessarily
+easier for users and which missing features would make a small language
+inconvenient in practice.
+
+**Confirm:** Record which Week 3 reading, readiness questions, and self-study
+exercises I actually completed before class.
 
 ### Activities during class
 
-_To be written from the Week 3 material and my actual class notes._
+After the readiness activities, the application exercise explored programs
+that generate other programs. The team used Lox as the source language to
+produce Logo turtle-graphics commands. The generated Logo program was limited
+to `clearscreen`, `fd n`, `rt n`, `pu`, and `pd`, so repeated drawing commands
+needed to be produced by loops or functions in the Lox generator rather than
+written out manually.
+
+This exercise clarified the difference between the program being executed and
+the program being generated. The Lox program controlled the generation
+process, while its text output became a separate Logo program interpreted by
+the online turtle environment. It demonstrated why generated source code is a
+useful intermediate result in language implementation.
+
+**Confirm:** Add what shape my team generated, the Lox construct I contributed,
+and whether our Lox and generated Logo programs were shared with the class.
 
 ### Work at home for the assignment
 
-_To be written from my actual Assignment 1 work._
+I related the exercise to the river-language parser. A parser also transforms
+one representation into another: it receives a flat token stream and builds a
+nested AST. This encouraged me to make the Assignment 1 result visible with an
+AST printer rather than only reporting that parsing succeeded.
+
+I considered which concepts needed dedicated syntax-tree nodes. Root rivers,
+derived rivers, and the output location would become statement nodes, while
+daily flow values, river names, combinations, and transformations would become
+expression nodes. I also considered concise domain operations such as
+`delay(flow, days)` instead of expanding every delayed daily value manually.
+
+**Confirm:** Keep only the AST, grammar, coding, or exercise work actually
+completed during Week 3 and add filenames or notes that provide evidence.
 
 ## Week 4
 
