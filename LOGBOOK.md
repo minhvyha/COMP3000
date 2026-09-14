@@ -44,21 +44,57 @@ language.
 **Confirm:** Replace or extend this paragraph with any actual setup, reading,
 notes, or assignment work completed at home during Week 1.
 
-## Week 2
+## Week 2 — Introduction to Programming Languages
 
-**Date:** _To be provided._
+**Date:** _Add the actual class date._
 
 ### Preparation before class
 
-_To be written from the Week 2 material and my actual preparation._
+The prescribed preparation was Chapters 1 and 2 of *Crafting Interpreters* and
+four Echo360 lectures covering how to use the textbook, little languages, the
+compiler/interpreter pipeline, and the distinction between compilers and
+interpreters. I focused on the idea that a domain-specific “little language”
+can provide concise notation for one problem area. I also reviewed the main
+pipeline stages: scanning characters into tokens, parsing tokens into a tree,
+static analysis, optimisation, and code generation or direct interpretation.
+
+**Confirm:** Record which readings and videos I actually completed before the
+class and add any questions I brought to the iRAT.
 
 ### Activities during class
 
-_To be written from the Week 2 material and my actual class notes._
+After the iRAT and team tRAT, the application exercise used regular expressions
+as an example of a little language. The team experimented in Regexr with exact
+matches, alternatives, repetition, and capture groups. We then considered
+whether regular expressions form a computationally complete language by
+looking for variables, conditions, loops, and functions. Capture groups can
+act like stored values and `*` or `+` provide repetition, but ordinary regular
+expressions do not provide general control flow or functions. This supported
+the conclusion that ordinary regex syntax is useful and expressive within its
+domain without necessarily being a complete general-purpose language.
+
+The exercise also reinforced that “compiled” and “interpreted” describe a
+language implementation rather than the language itself. A compiler produces
+code in another language, while an interpreter executes the source directly.
+
+**Confirm:** Add the team’s actual “fun” regular expression, the text it
+matched, and the conclusion the team reported to the class.
 
 ### Work at home for the assignment
 
-_To be written from my actual Assignment 1 work._
+I connected the week’s pipeline to Assignment 1. The river language would be a
+domain-specific little language: its scanner would convert source characters
+to tokens and its parser would turn those tokens into a tree representing the
+river system. This helped establish why the first submission focuses on
+scanning, grammar, parsing, and AST output rather than evaluation.
+
+I also reviewed the Chapter 1 self-study questions about little languages and
+the implementation pipeline. As an initial design note, I identified that the
+river language would need notation for root rivers, combining upstream flows,
+and selecting the final output river.
+
+**Confirm:** Keep only the reading, exercises, and assignment notes I actually
+completed at home, and add links or filenames if any Week 2 notes were saved.
 
 ## Week 3
 
