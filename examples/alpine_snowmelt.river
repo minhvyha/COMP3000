@@ -1,0 +1,13 @@
+// A slower alpine system. Each literal is a ten-day hydrograph.
+source west_snowfield = [1, 2, 5, 9, 12, 10, 7, 4, 2, 1];
+source east_snowfield = [0, 1, 3, 6, 10, 11, 8, 5, 3, 1];
+source valley_rain = [6, 5, 4, 3, 2, 1, 1, 0, 0, 0];
+
+// Snowmelt travels slowly; local rain reaches the main channel sooner.
+river alpine_fork =
+    spread(west_snowfield + east_snowfield, 3);
+river valley_fork = delay(valley_rain, 1);
+river snowgum_river =
+    retain(alpine_fork + valley_fork, 0.92);
+
+outlet snowgum_river;

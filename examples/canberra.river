@@ -1,0 +1,13 @@
+// Root rivers start with a ten-day flow. In Assignment 2 these expressions
+// can be changed to derive flow from rainfall and catchment size.
+source googong = [8, 6, 4, 3, 2, 1, 1, 0, 0, 0];
+source upper_molongolo = [4, 5, 7, 6, 4, 3, 2, 1, 0, 0];
+source jerrabomberra = [2, 3, 5, 4, 3, 2, 1, 1, 0, 0];
+
+// Function-like operations keep domain vocabulary in the program.
+river queanbeyan = delay(googong, 1);
+river central_molongolo =
+    retain(queanbeyan + upper_molongolo + jerrabomberra, 0.9);
+river lower_molongolo = delay(central_molongolo, 1);
+
+outlet lower_molongolo;

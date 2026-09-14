@@ -1,0 +1,11 @@
+// A compact campus system with three flashy urban catchments.
+// Multiplication represents a runoff coefficient applied to each day.
+source joes = [12, 8, 5, 3, 2, 1, 0, 0, 0, 0] * 0.80;
+source mahers = [7, 6, 4, 2, 1, 0, 0, 0, 0, 0] * 0.65;
+source devlins = [4, 7, 6, 4, 2, 1, 0, 0, 0, 0] * 0.55;
+
+// Joes and Mahers meet first. Parentheses make that grouping explicit.
+river university_lake = delay((joes + mahers), 1);
+river lower_lachlan = retain(university_lake + devlins, 0.85);
+
+outlet lower_lachlan;
