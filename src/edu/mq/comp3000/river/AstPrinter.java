@@ -3,7 +3,11 @@ package edu.mq.comp3000.river;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Visits the AST and converts it into readable parenthesised text.
+ */
 final class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
+  // Print every top-level declaration on a separate line.
   String print(List<Stmt> statements) {
     return statements.stream()
         .map(statement -> statement.accept(this))
@@ -65,6 +69,7 @@ final class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
     return expr.name.lexeme;
   }
 
+  // Print nested expressions in the same style as the Lox AST printer.
   private String parenthesize(String name, Expr... expressions) {
     String values = java.util.Arrays.stream(expressions)
         .map(expression -> expression.accept(this))
@@ -72,6 +77,7 @@ final class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
     return "(" + name + " " + values + ")";
   }
 
+  // Avoid printing whole numbers with an unnecessary ".0".
   private String formatNumber(Double number) {
     if (number == Math.rint(number)) return Long.toString(number.longValue());
     return number.toString();

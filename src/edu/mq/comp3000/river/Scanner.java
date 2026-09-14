@@ -11,6 +11,7 @@ import static edu.mq.comp3000.river.TokenType.*;
  * Lox-style scanner adapted from Chapter 4 of Crafting Interpreters.
  */
 final class Scanner {
+  // Words in this map are keywords instead of ordinary identifiers.
   private static final Map<String, TokenType> KEYWORDS = new HashMap<>();
 
   static {
@@ -29,6 +30,7 @@ final class Scanner {
     this.source = source;
   }
 
+  // Scan the entire source file and finish with an EOF token.
   List<Token> scanTokens() {
     while (!isAtEnd()) {
       start = current;
@@ -39,6 +41,7 @@ final class Scanner {
     return tokens;
   }
 
+  // Read one character and decide which token starts there.
   private void scanToken() {
     char c = advance();
     switch (c) {
@@ -75,6 +78,7 @@ final class Scanner {
     }
   }
 
+  // Continue through a name, then check whether it is a keyword.
   private void identifier() {
     while (isAlphaNumeric(peek())) advance();
 
@@ -82,6 +86,7 @@ final class Scanner {
     addToken(KEYWORDS.getOrDefault(text, IDENTIFIER));
   }
 
+  // Read an integer or decimal number and store its numeric value.
   private void number() {
     while (isDigit(peek())) advance();
 
@@ -93,6 +98,7 @@ final class Scanner {
     addToken(NUMBER, Double.parseDouble(source.substring(start, current)));
   }
 
+  // Consume an expected second character without going past the source.
   private boolean match(char expected) {
     if (isAtEnd() || source.charAt(current) != expected) return false;
     current++;
@@ -129,10 +135,12 @@ final class Scanner {
     return source.charAt(current++);
   }
 
+  // Add a token that does not need a separate literal value.
   private void addToken(TokenType type) {
     addToken(type, null);
   }
 
+  // Save the token text, optional value, and source line.
   private void addToken(TokenType type, Object literal) {
     tokens.add(new Token(type, source.substring(start, current), literal, line));
   }

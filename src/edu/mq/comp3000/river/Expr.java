@@ -2,7 +2,11 @@ package edu.mq.comp3000.river;
 
 import java.util.List;
 
+/**
+ * Base class for every expression that can describe or transform a flow.
+ */
 abstract class Expr {
+  // The visitor keeps operations such as printing separate from the AST data.
   interface Visitor<R> {
     R visitBinaryExpr(Binary expr);
     R visitCallExpr(Call expr);
@@ -15,6 +19,7 @@ abstract class Expr {
 
   abstract <R> R accept(Visitor<R> visitor);
 
+  // An expression with two operands, such as joes + mahers.
   static final class Binary extends Expr {
     final Expr left;
     final Token operator;
@@ -31,6 +36,7 @@ abstract class Expr {
     }
   }
 
+  // A named flow operation, such as delay(googong, 1).
   static final class Call extends Expr {
     final Token name;
     final List<Expr> arguments;
@@ -45,7 +51,7 @@ abstract class Expr {
     }
   }
 
-  /** A flow over consecutive days, for example [4, 3, 2, 1]. */
+  // A flow over consecutive days, for example [4, 3, 2, 1].
   static final class Flow extends Expr {
     final List<Double> days;
 
@@ -58,6 +64,7 @@ abstract class Expr {
     }
   }
 
+  // An expression placed inside parentheses.
   static final class Grouping extends Expr {
     final Expr expression;
 
@@ -70,6 +77,7 @@ abstract class Expr {
     }
   }
 
+  // A single value, which is currently a number.
   static final class Literal extends Expr {
     final Object value;
 
@@ -82,6 +90,7 @@ abstract class Expr {
     }
   }
 
+  // An expression with one operator, such as -5.
   static final class Unary extends Expr {
     final Token operator;
     final Expr right;
@@ -96,6 +105,7 @@ abstract class Expr {
     }
   }
 
+  // A reference to a previously named source or river.
   static final class Variable extends Expr {
     final Token name;
 

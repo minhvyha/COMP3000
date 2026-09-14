@@ -19,6 +19,7 @@ final class Parser {
     this.tokens = tokens;
   }
 
+  // Parse declarations until the scanner's EOF token is reached.
   List<Stmt> parse() {
     List<Stmt> statements = new ArrayList<>();
     while (!isAtEnd()) {
@@ -28,6 +29,7 @@ final class Parser {
     return statements;
   }
 
+  // Choose a declaration rule from its first keyword.
   private Stmt declaration() {
     try {
       if (match(SOURCE)) return sourceDeclaration();
@@ -41,6 +43,7 @@ final class Parser {
     }
   }
 
+  // source name = flow;
   private Stmt sourceDeclaration() {
     Token name = consume(IDENTIFIER, "Expected source name.");
     consume(EQUAL, "Expected '=' after source name.");
@@ -49,6 +52,7 @@ final class Parser {
     return new Stmt.Source(name, flow);
   }
 
+  // river name = flow;
   private Stmt riverDeclaration() {
     Token name = consume(IDENTIFIER, "Expected river name.");
     consume(EQUAL, "Expected '=' after river name.");
@@ -57,6 +61,7 @@ final class Parser {
     return new Stmt.River(name, flow);
   }
 
+  // outlet name;
   private Stmt outletDeclaration() {
     Token name = consume(IDENTIFIER, "Expected outlet river name.");
     consume(SEMICOLON, "Expected ';' after outlet declaration.");
@@ -67,6 +72,7 @@ final class Parser {
     return term();
   }
 
+  // Addition and subtraction have lower precedence than multiplication.
   private Expr term() {
     Expr expr = factor();
 
@@ -78,6 +84,7 @@ final class Parser {
     return expr;
   }
 
+  // Multiplication and division bind more tightly than + and -.
   private Expr factor() {
     Expr expr = unary();
 
@@ -89,6 +96,7 @@ final class Parser {
     return expr;
   }
 
+  // Parse a leading minus before parsing basic expressions.
   private Expr unary() {
     if (match(MINUS)) {
       return new Expr.Unary(previous(), unary());
@@ -96,6 +104,7 @@ final class Parser {
     return primary();
   }
 
+  // Parse numbers, flow lists, names, calls, and grouped expressions.
   private Expr primary() {
     if (match(NUMBER)) return new Expr.Literal(previous().literal);
     if (match(LEFT_BRACKET)) return flowLiteral();
@@ -115,6 +124,7 @@ final class Parser {
     throw error(peek(), "Expected a flow expression.");
   }
 
+  // Parse the comma-separated arguments after an operation name.
   private Expr finishCall(Token name) {
     List<Expr> arguments = new ArrayList<>();
     if (!check(RIGHT_PAREN)) {
@@ -129,6 +139,7 @@ final class Parser {
     return new Expr.Call(name, arguments);
   }
 
+  // Parse daily values between [ and ].
   private Expr flowLiteral() {
     List<Double> days = new ArrayList<>();
     if (!check(RIGHT_BRACKET)) {
@@ -141,6 +152,7 @@ final class Parser {
     return new Expr.Flow(days);
   }
 
+  // Consume the next token if it is one of the requested types.
   private boolean match(TokenType... types) {
     for (TokenType type : types) {
       if (check(type)) {
@@ -151,6 +163,7 @@ final class Parser {
     return false;
   }
 
+  // Require one token type or report a useful syntax error.
   private Token consume(TokenType type, String message) {
     if (check(type)) return advance();
     throw error(peek(), message);
