@@ -1,5 +1,3 @@
-package edu.mq.comp3000.river;
-
 /**
  * Every token category understood by the scanner and parser.
  */

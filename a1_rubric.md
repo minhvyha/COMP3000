@@ -27,19 +27,21 @@ visitor structure follows Chapter 5.
 ### Your answer
 
 The working folder is the top-level folder of the unzipped submission: the
-folder containing `README.md`, `a1_rubric.md`, `src`, and `examples`.
+folder containing `README.md`, `a1_rubric.md`, `LOGBOOK.md`, `src`, and
+`examples`. The Java files are directly in `src/`, while the example programs
+are in `examples/`.
 
 From that folder, using Java 17 or later:
 
 ```sh
 mkdir -p out
-javac -d out $(find src -name '*.java')
+javac -d out src/*.java
 ```
 
 For example, parse the Canberra program with:
 
 ```sh
-java -cp out edu.mq.comp3000.river.RiverLox examples/canberra.river
+java -cp out RiverLox examples/canberra.river
 ```
 
 3. What literal in your language represents a river that gets 10L/s of flow on the first day after 1mm of rainfall?
@@ -83,13 +85,23 @@ represented by classes in `Expr.java`.
 
 ### Your answer
 
-A source hydrograph normally describes ten consecutive days, so rainfall can
-continue contributing source flow for up to ten days. A downstream operation
-may explicitly add travel time: for example, `delay(flow, 1)` represents one
-additional day. Therefore the total time is ten days plus the delays on the
-longest source-to-outlet path. In `canberra.river`, the longest path has two
-one-day delays, so it can take up to twelve days. Submission One parses this
-model but does not yet evaluate it.
+There is no single fixed duration for every program. The grammar permits
+variable-length source flow lists; the examples use ten days. Under the
+intended evaluation rules in `README.md`, `delay(flow, d)` adds `d` days,
+`retain(flow, r)` adds one day when `r > 0`, and `spread(flow, n)` adds `n - 1`
+days. Retain releases the held fraction on the next day, and spread releases
+each day's input evenly over `n` days. Both preserve total water.
+
+An upper bound is the source-list length plus the extensions along its path
+to the outlet, taking the maximum over all source paths. Canberra therefore
+has a 13-day upper bound: ten source days, two one-day delays, and one day of
+retention. Its actual last non-zero flow is on day 10 because the source lists
+end in zeros. The Macquarie and alpine examples have upper bounds of 12 and
+13 days respectively. Empty or all-zero flows contribute no water.
+
+Submission One only parses these operations. These durations describe the
+intended Assignment 2 semantics, documented under “Intended flow operations”
+in `README.md`, rather than results produced by the current parser.
 
 ## Log-book submissions (10)
 
@@ -97,10 +109,7 @@ Which file in the zip are your log-book entries and when did you make them? Your
 
 ### Your answer
 
-TODO: Replace this paragraph with the filename and genuine dates of the
-log-book entries that the teacher saw during the semester. No log-book history
-can be inferred safely from the parser repository, and entries should not be
-created retrospectively.
+The entries are in `LOGBOOK.md`, one complete week from Week 1 to Week 8. Each week has preparation, the class activity, and the assignment work that followed. The entry dates are 30 July, 7 August, 14 August, 17 August, 28 August, 4 September, 10 September, and 19 September 2026.
 
 ## Grammar given in the document in Nystrom's notation (20)
 
@@ -259,14 +268,23 @@ The following features go beyond the Chapter 6 expression parser:
    with line numbers, and uses a non-zero exit status for invalid input.
 
 The implementations are in
-`src/edu/mq/comp3000/river/Parser.java`,
-`Expr.java`, `Stmt.java`, `AstPrinter.java`, and `RiverLox.java`.
+`src/Parser.java`, `src/Expr.java`, `src/Stmt.java`,
+`src/AstPrinter.java`, and `src/RiverLox.java`. These source files now use
+the default Java package, and compilation places their class files directly
+in `out/`.
 
 ## Uniqueness and Creativity (20)
 
 What did you do beyond the in-class work? Point your marker to where it lives in your submission.
 
 ### Your answer
+
+I was the sole student contributor to this project, including the river-language
+design, grammar, Java parser, example programs, and submission documentation.
+No other team member contributed to the project. I developed it using the
+course material and Nystrom's Lox architecture, with generative-AI assistance
+as disclosed below. The project work described in my logbook includes my own
+work during workshops as well as work outside class.
 
 The language separates river topology from flow transformations.
 `source`, `river`, and `outlet` make each location’s role in the network
@@ -287,15 +305,17 @@ Canberra uses chained travel delays, Macquarie uses runoff scaling and explicit
 grouping, and the alpine system uses spread and independently delayed
 tributaries.
 
-Before submission, this section should be revised to identify the specific
-differences from the work completed in your class and to explain the design
-decisions in your own words. The current repository alone cannot establish
-which work was completed in class.
+Compared with the Chapter 6 expression parser, this submission parses complete
+river systems with named sources, derived rivers, and an explicit outlet.
+Compared with the exemplar's compact start/spread/magnitude literal, the daily
+list exposes the hydrograph directly. Generic calls let the grammar represent
+different flow transformations through one expression form. These differences
+are visible in the grammar above, `Stmt.java`, `Expr.java`, `Parser.java`, and
+the three example files. The calls are parsed here; their evaluation belongs
+to Submission Two.
 
-## Attribution and review note
+## Attribution
 
 The architecture is adapted from Robert Nystrom’s Java Lox implementation in
-*Crafting Interpreters*. The current implementation and this draft explanation
-were prepared with generative-AI assistance. Review the code and wording,
-rewrite the personal design explanation, and follow the unit’s current
-generative-AI disclosure requirements before submission.
+*Crafting Interpreters*. The implementation and this explanation
+were prepared with generative-AI assistance.

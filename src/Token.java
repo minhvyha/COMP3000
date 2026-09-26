@@ -1,5 +1,3 @@
-package edu.mq.comp3000.river;
-
 /**
  * One meaningful piece of source code produced by the scanner.
  */

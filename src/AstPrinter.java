@@ -1,5 +1,3 @@
-package edu.mq.comp3000.river;
-
 import java.util.List;
 import java.util.stream.Collectors;
 

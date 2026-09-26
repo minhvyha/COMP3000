@@ -1,5 +1,3 @@
-package edu.mq.comp3000.river;
-
 /**
  * Base class for the declarations that make up a river program.
  */

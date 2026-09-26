@@ -1,11 +1,7 @@
-package edu.mq.comp3000.river;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static edu.mq.comp3000.river.TokenType.*;
 
 /**
  * Lox-style scanner adapted from Chapter 4 of Crafting Interpreters.
@@ -15,9 +11,9 @@ final class Scanner {
   private static final Map<String, TokenType> KEYWORDS = new HashMap<>();
 
   static {
-    KEYWORDS.put("source", SOURCE);
-    KEYWORDS.put("river", RIVER);
-    KEYWORDS.put("outlet", OUTLET);
+    KEYWORDS.put("source", TokenType.SOURCE);
+    KEYWORDS.put("river", TokenType.RIVER);
+    KEYWORDS.put("outlet", TokenType.OUTLET);
   }
 
   private final String source;
@@ -37,7 +33,7 @@ final class Scanner {
       scanToken();
     }
 
-    tokens.add(new Token(EOF, "", null, line));
+    tokens.add(new Token(TokenType.EOF, "", null, line));
     return tokens;
   }
 
@@ -45,21 +41,21 @@ final class Scanner {
   private void scanToken() {
     char c = advance();
     switch (c) {
-      case '(' -> addToken(LEFT_PAREN);
-      case ')' -> addToken(RIGHT_PAREN);
-      case '[' -> addToken(LEFT_BRACKET);
-      case ']' -> addToken(RIGHT_BRACKET);
-      case ',' -> addToken(COMMA);
-      case '-' -> addToken(MINUS);
-      case '+' -> addToken(PLUS);
-      case ';' -> addToken(SEMICOLON);
-      case '*' -> addToken(STAR);
-      case '=' -> addToken(EQUAL);
+      case '(' -> addToken(TokenType.LEFT_PAREN);
+      case ')' -> addToken(TokenType.RIGHT_PAREN);
+      case '[' -> addToken(TokenType.LEFT_BRACKET);
+      case ']' -> addToken(TokenType.RIGHT_BRACKET);
+      case ',' -> addToken(TokenType.COMMA);
+      case '-' -> addToken(TokenType.MINUS);
+      case '+' -> addToken(TokenType.PLUS);
+      case ';' -> addToken(TokenType.SEMICOLON);
+      case '*' -> addToken(TokenType.STAR);
+      case '=' -> addToken(TokenType.EQUAL);
       case '/' -> {
         if (match('/')) {
           while (peek() != '\n' && !isAtEnd()) advance();
         } else {
-          addToken(SLASH);
+          addToken(TokenType.SLASH);
         }
       }
       case ' ', '\r', '\t' -> {
@@ -83,7 +79,7 @@ final class Scanner {
     while (isAlphaNumeric(peek())) advance();
 
     String text = source.substring(start, current);
-    addToken(KEYWORDS.getOrDefault(text, IDENTIFIER));
+    addToken(KEYWORDS.getOrDefault(text, TokenType.IDENTIFIER));
   }
 
   // Read an integer or decimal number and store its numeric value.
@@ -95,7 +91,7 @@ final class Scanner {
       while (isDigit(peek())) advance();
     }
 
-    addToken(NUMBER, Double.parseDouble(source.substring(start, current)));
+    addToken(TokenType.NUMBER, Double.parseDouble(source.substring(start, current)));
   }
 
   // Consume an expected second character without going past the source.

@@ -1,5 +1,3 @@
-package edu.mq.comp3000.river;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -18,7 +16,7 @@ public final class RiverLox {
   public static void main(String[] args) throws IOException {
     // This parser expects exactly one source filename.
     if (args.length != 1) {
-      System.err.println("Usage: java edu.mq.comp3000.river.RiverLox <program.river>");
+      System.err.println("Usage: java -cp out RiverLox <program.river>");
       System.exit(64);
     }
 

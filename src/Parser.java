@@ -1,9 +1,5 @@
-package edu.mq.comp3000.river;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import static edu.mq.comp3000.river.TokenType.*;
 
 /**
  * Recursive-descent parser following the structure of Chapter 6 of
@@ -32,9 +28,9 @@ final class Parser {
   // Choose a declaration rule from its first keyword.
   private Stmt declaration() {
     try {
-      if (match(SOURCE)) return sourceDeclaration();
-      if (match(RIVER)) return riverDeclaration();
-      if (match(OUTLET)) return outletDeclaration();
+      if (match(TokenType.SOURCE)) return sourceDeclaration();
+      if (match(TokenType.RIVER)) return riverDeclaration();
+      if (match(TokenType.OUTLET)) return outletDeclaration();
 
       throw error(peek(), "Expected 'source', 'river', or 'outlet'.");
     } catch (ParseError error) {
@@ -45,26 +41,26 @@ final class Parser {
 
   // source name = flow;
   private Stmt sourceDeclaration() {
-    Token name = consume(IDENTIFIER, "Expected source name.");
-    consume(EQUAL, "Expected '=' after source name.");
+    Token name = consume(TokenType.IDENTIFIER, "Expected source name.");
+    consume(TokenType.EQUAL, "Expected '=' after source name.");
     Expr flow = expression();
-    consume(SEMICOLON, "Expected ';' after source declaration.");
+    consume(TokenType.SEMICOLON, "Expected ';' after source declaration.");
     return new Stmt.Source(name, flow);
   }
 
   // river name = flow;
   private Stmt riverDeclaration() {
-    Token name = consume(IDENTIFIER, "Expected river name.");
-    consume(EQUAL, "Expected '=' after river name.");
+    Token name = consume(TokenType.IDENTIFIER, "Expected river name.");
+    consume(TokenType.EQUAL, "Expected '=' after river name.");
     Expr flow = expression();
-    consume(SEMICOLON, "Expected ';' after river declaration.");
+    consume(TokenType.SEMICOLON, "Expected ';' after river declaration.");
     return new Stmt.River(name, flow);
   }
 
   // outlet name;
   private Stmt outletDeclaration() {
-    Token name = consume(IDENTIFIER, "Expected outlet river name.");
-    consume(SEMICOLON, "Expected ';' after outlet declaration.");
+    Token name = consume(TokenType.IDENTIFIER, "Expected outlet river name.");
+    consume(TokenType.SEMICOLON, "Expected ';' after outlet declaration.");
     return new Stmt.Outlet(name);
   }
 
@@ -76,7 +72,7 @@ final class Parser {
   private Expr term() {
     Expr expr = factor();
 
-    while (match(MINUS, PLUS)) {
+    while (match(TokenType.MINUS, TokenType.PLUS)) {
       Token operator = previous();
       Expr right = factor();
       expr = new Expr.Binary(expr, operator, right);
@@ -88,7 +84,7 @@ final class Parser {
   private Expr factor() {
     Expr expr = unary();
 
-    while (match(SLASH, STAR)) {
+    while (match(TokenType.SLASH, TokenType.STAR)) {
       Token operator = previous();
       Expr right = unary();
       expr = new Expr.Binary(expr, operator, right);
@@ -98,7 +94,7 @@ final class Parser {
 
   // Parse a leading minus before parsing basic expressions.
   private Expr unary() {
-    if (match(MINUS)) {
+    if (match(TokenType.MINUS)) {
       return new Expr.Unary(previous(), unary());
     }
     return primary();
@@ -106,18 +102,18 @@ final class Parser {
 
   // Parse numbers, flow lists, names, calls, and grouped expressions.
   private Expr primary() {
-    if (match(NUMBER)) return new Expr.Literal(previous().literal);
-    if (match(LEFT_BRACKET)) return flowLiteral();
+    if (match(TokenType.NUMBER)) return new Expr.Literal(previous().literal);
+    if (match(TokenType.LEFT_BRACKET)) return flowLiteral();
 
-    if (match(IDENTIFIER)) {
+    if (match(TokenType.IDENTIFIER)) {
       Token name = previous();
-      if (match(LEFT_PAREN)) return finishCall(name);
+      if (match(TokenType.LEFT_PAREN)) return finishCall(name);
       return new Expr.Variable(name);
     }
 
-    if (match(LEFT_PAREN)) {
+    if (match(TokenType.LEFT_PAREN)) {
       Expr expr = expression();
-      consume(RIGHT_PAREN, "Expected ')' after expression.");
+      consume(TokenType.RIGHT_PAREN, "Expected ')' after expression.");
       return new Expr.Grouping(expr);
     }
 
@@ -127,28 +123,28 @@ final class Parser {
   // Parse the comma-separated arguments after an operation name.
   private Expr finishCall(Token name) {
     List<Expr> arguments = new ArrayList<>();
-    if (!check(RIGHT_PAREN)) {
+    if (!check(TokenType.RIGHT_PAREN)) {
       do {
         if (arguments.size() >= 8) {
           throw error(peek(), "A flow operation supports at most 8 arguments.");
         }
         arguments.add(expression());
-      } while (match(COMMA));
+      } while (match(TokenType.COMMA));
     }
-    consume(RIGHT_PAREN, "Expected ')' after arguments.");
+    consume(TokenType.RIGHT_PAREN, "Expected ')' after arguments.");
     return new Expr.Call(name, arguments);
   }
 
   // Parse daily values between [ and ].
   private Expr flowLiteral() {
     List<Double> days = new ArrayList<>();
-    if (!check(RIGHT_BRACKET)) {
+    if (!check(TokenType.RIGHT_BRACKET)) {
       do {
-        Token value = consume(NUMBER, "Expected a numeric daily flow.");
+        Token value = consume(TokenType.NUMBER, "Expected a numeric daily flow.");
         days.add((Double) value.literal);
-      } while (match(COMMA));
+      } while (match(TokenType.COMMA));
     }
-    consume(RIGHT_BRACKET, "Expected ']' after flow literal.");
+    consume(TokenType.RIGHT_BRACKET, "Expected ']' after flow literal.");
     return new Expr.Flow(days);
   }
 
@@ -170,7 +166,7 @@ final class Parser {
   }
 
   private boolean check(TokenType type) {
-    if (isAtEnd()) return type == EOF;
+    if (isAtEnd()) return type == TokenType.EOF;
     return peek().type == type;
   }
 
@@ -180,7 +176,7 @@ final class Parser {
   }
 
   private boolean isAtEnd() {
-    return peek().type == EOF;
+    return peek().type == TokenType.EOF;
   }
 
   private Token peek() {
@@ -203,8 +199,8 @@ final class Parser {
   private void synchronize() {
     advance();
     while (!isAtEnd()) {
-      if (previous().type == SEMICOLON) return;
-      if (check(SOURCE) || check(RIVER) || check(OUTLET)) return;
+      if (previous().type == TokenType.SEMICOLON) return;
+      if (check(TokenType.SOURCE) || check(TokenType.RIVER) || check(TokenType.OUTLET)) return;
       advance();
     }
   }
